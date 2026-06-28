@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上海高考一分一段表 · 数据分析 (2020–2026)</title>
+<style>
+  :root {
+    --bg: #f8f9fb;
+    --card: #fff;
+    --text: #333;
+    --muted: #888;
+    --accent: #C62828;
+    --accent2: #1565C0;
+    --border: #e0e0e0;
+    --shadow: 0 2px 12px rgba(0,0,0,.07);
+    --tag-old: #f0f4ff;
+    --tag-new: #fff0f0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background: var(--bg); color: var(--text); line-height:1.7;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 40%, #C62828 100%);
+    color: #fff; padding: 48px 24px 40px; text-align: center;
+  }
+  .hero h1 { font-size: 2rem; font-weight: 700; letter-spacing: 1px; }
+  .hero p  { margin-top: 10px; font-size: 1.05rem; opacity: .85; }
+  .hero .meta { margin-top: 18px; display:flex; gap:20px; justify-content:center; flex-wrap:wrap; font-size:.88rem; }
+  .hero .meta span { background:rgba(255,255,255,.15); padding:4px 14px; border-radius:20px; }
+
+  /* Nav pills */
+  .nav-bar {
+    position: sticky; top:0; z-index:100;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    display:flex; justify-content:center; gap:6px; padding:10px 16px; flex-wrap:wrap;
+  }
+  .nav-bar button {
+    border:1px solid var(--border); background:var(--card); color:var(--text);
+    padding:8px 18px; border-radius:22px; cursor:pointer; font-size:.88rem;
+    transition: all .2s; font-family: inherit;
+  }
+  .nav-bar button:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-bar button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+  /* Layout */
+  .container { max-width: 1160px; margin:0 auto; padding: 28px 20px 60px; }
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-size: 1.4rem; font-weight: 700; margin-bottom: 8px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-title .dot { width:10px;height:10px;border-radius:50%;display:inline-block; }
+  .section-desc { color: var(--muted); margin-bottom: 22px; font-size: .92rem; }
+
+  /* Card */
+  .card {
+    background: var(--card); border-radius: 14px; box-shadow: var(--shadow);
+    margin-bottom: 28px; overflow: hidden;
+    border: 1px solid var(--border);
+    transition: box-shadow .25s;
+  }
+  .card:hover { box-shadow: 0 4px 24px rgba(0,0,0,.10); }
+  .card-body { padding: 22px 26px 10px; }
+  .card-body h3 { font-size: 1.12rem; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .card-body .insight {
+    font-size: .85rem; color: var(--muted); margin-bottom: 14px; padding:10px 14px;
+    background: #fafafa; border-radius:8px; border-left:3px solid var(--accent);
+  }
+  .card-body img { width:100%; display:block; border-radius:6px; margin-bottom:4px; cursor:pointer; transition: transform .15s; }
+  .card-body img:hover { transform: scale(1.008); }
+
+  .badge {
+    display:inline-block; padding:2px 10px; border-radius:10px;
+    font-size:.78rem; font-weight:600;
+  }
+  .badge-old { background: var(--tag-old); color:#1565C0; }
+  .badge-new { background: var(--tag-new); color:#C62828; }
+
+  /* Grid for overview + tabs */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  @media (max-width: 860px) { .grid-2 { grid-template-columns:1fr; } .hero h1 { font-size:1.45rem; } }
+
+  /* Lightbox */
+  .lightbox {
+    display:none; position:fixed; inset:0; z-index:999;
+    background: rgba(0,0,0,.88); cursor:zoom-out;
+    align-items:center; justify-content:center;
+  }
+  .lightbox.show { display:flex; }
+  .lightbox img { max-width:94vw; max-height:94vh; border-radius:6px; cursor:default; }
+
+  /* Footer */
+  .footer { text-align:center; padding:30px; color:var(--muted); font-size:.82rem; }
+
+  /* key-finding callout */
+  .callouts { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom: 32px; }
+  .callout {
+    background: var(--card); border-radius:12px; padding:18px 20px;
+    box-shadow: var(--shadow); border-top:4px solid var(--accent);
+  }
+  .callout .num { font-size:1.7rem; font-weight:800; color:var(--accent); }
+  .callout .label { font-size:.83rem; color:var(--muted); margin-top:2px; }
+  .callout.c-blue { border-top-color: var(--accent2); }
+  .callout.c-blue .num { color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <h1>上海高考一分一段表 · 深度分析</h1>
+  <p>2020–2026 年七年数据可视化，洞察分数分布与竞争格局变迁</p>
+  <div class="meta">
+    <span>📊 数据来源：上海市教育考试院</span>
+    <span>📅 更新至 2026-06-23</span>
+    <span>👥 覆盖 7 年 · 33.7 万考生</span>
+  </div>
+</header>
+
+<!-- ═══ STICKY NAV ═══ -->
+<nav class="nav-bar" id="nav">
+  <button class="active" data-target="overview">📋 总览</button>
+  <button data-target="cross-year">📊 年度对比</button>
+  <button data-target="distribution">📈 分布形态</button>
+</nav>
+
+<!-- ═══ BODY ═══ -->
+<div class="container">
+
+<!-- ═══════════ OVERVIEW ═══════════ -->
+<section id="overview" class="section">
+
+  <!-- Key callouts -->
+  <div class="callouts">
+    <div class="callout">
+      <div class="num">51,853</div>
+      <div class="label">2026 年考生总数（近 7 年最高）</div>
+    </div>
+    <div class="callout">
+      <div class="num">616 分</div>
+      <div class="label">2026 年最高分（含加分）</div>
+    </div>
+    <div class="callout c-blue">
+      <div class="num">+24.7%</div>
+      <div class="label">2026 vs 2024 考生增幅</div>
+    </div>
+    <div class="callout c-blue">
+      <div class="num">48.2%</div>
+      <div class="label">2026 年 ≥500 分考生占比</div>
+    </div>
+  </div>
+
+  <!-- Combined overview -->
+  <div class="card">
+    <div class="card-body">
+      <h3>🖼️ 六合一总览</h3>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:12px">点击任意图片放大查看 · 下方分图配有详细解读</p>
+      <img src="yiduan_charts_combined.png" alt="六图总览" onclick="openLightbox(this.src)">
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CROSS-YEAR ═══════════ -->
+<section id="cross-year" class="section">
+  <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> 年度间横向对比</div>
+  <div class="section-desc">适合志愿填报参考：回答"我的分数在今年是什么水平？比往年是值钱了还是贬值了？"</div>
+
+  <div class="grid-2">
+
+    <!-- Chart 1 -->
+    <div class="card">
+      <div class="card-body">
+        <h3>1️⃣ 各年考生总数对比</h3>
+        <div class="insight">
+          💡 <strong>关键发现：</strong>2026 年考生 5.19 万，为近七年最高，竞争基数扩大。2024 年是评分体系改革分水岭（最低分从 ~260 跃升至 ~402），改革前后数据不可直接对比。
+        </div>
+        <img src="charts/01_total_students.png" alt="各年考生总数对比" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+
+    <!-- Chart 2 -->
+    <div class="card">
+      <div class="card-body">
+        <h3>2️⃣ 关键分数线对应位次走势</h3>
+        <div class="insight">
+          💡 <strong>关键发现：</strong>同是 ≥580 分，2020 年排 ~1,300 名，2026 年排 ~2,980 名——高分段"含金量"在 2024 年改革后显著稀释。≥550 和 ≥500 分段的位次增长尤为明显。
+        </div>
+        <img src="charts/02_key_score_ranks.png" alt="关键分数位次走势" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+
+    <!-- Chart 3 -->
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-body">
+        <h3>3️⃣ 各年高/中/低分段人数占比</h3>
+        <div class="insight">
+          💡 <strong>关键发现：</strong>≥580（冲刺 985/211）占比从旧体系的 ~3–5% 提升到新体系的 ~6–8%；500–579（一本段）从 ~24% 扩展到 ~30%。分数分布的"腰部"变粗，中高分段竞争加剧。
+        </div>
+        <img src="charts/03_score_tiers.png" alt="各年分段人数占比" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DISTRIBUTION ═══════════ -->
+<section id="distribution" class="section">
+  <div class="section-title"><span class="dot" style="background:var(--accent)"></span> 单年分数分布形态</div>
+  <div class="section-desc">适合深度分析：理解考生生态——分数集中在哪？峰值在哪？年度间曲线如何漂移？</div>
+
+  <div class="grid-2">
+
+    <!-- Chart 4 -->
+    <div class="card">
+      <div class="card-body">
+        <h3>4️⃣ 分数-人数分布曲线 <span class="badge badge-new">2024–2026</span></h3>
+        <div class="insight">
+          💡 <strong>关键发现：</strong>三年分布峰值都在 500–510 分附近。2026 年峰值（501 分、378 人）比 2025 年（468 分、313 人）右移了约 30 分，说明整体考生水平或评分尺度在提升。
+        </div>
+        <img src="charts/04_distribution_curve.png" alt="分数分布曲线" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+
+    <!-- Chart 5 -->
+    <div class="card">
+      <div class="card-body">
+        <h3>5️⃣ 累计人数曲线 <span class="badge badge-new">2024–2026</span></h3>
+        <div class="insight">
+          💡 <strong>关键发现：</strong>2026 年曲线整体在 2024/2025 年之上，说明同分数段竞争人数更多。标注了 600/580/550/500/450/403 六个关键分数对应位次，可作为快速速查工具。
+        </div>
+        <img src="charts/05_cumulative_curve.png" alt="累计人数曲线" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart 6 - full width -->
+  <div class="card">
+    <div class="card-body">
+      <h3>6️⃣ 各年分数段人数密度热力图</h3>
+      <div class="insight">
+        💡 <strong>关键发现：</strong>热力图最直观地展示了评分体系改革的影响——旧体系（2020–2023）密度集中在左下角（低分区域），新体系（2024–2026）密度集中在右上角（中高分区域）。2026 年 500–520 分段密度最高（>2.5%），是竞争最激烈的分数带。
+      </div>
+      <img src="charts/06_heatmap.png" alt="分数密度热力图" onclick="openLightbox(this.src)">
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="footer">
+  <p>数据来源：上海市教育考试院官方发布的一分一段表（2020–2026）</p>
+  <p>图表生成：Python (matplotlib) · 网页构建：纯 HTML/CSS · 零外部依赖</p>
+</div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="放大预览">
+</div>
+
+<script>
+// ── Lightbox ──
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ── Tab / Nav ──
+const nav = document.getElementById('nav');
+const btns = nav.querySelectorAll('button');
+const sections = {
+  overview:   document.getElementById('overview'),
+  'cross-year': document.getElementById('cross-year'),
+  distribution: document.getElementById('distribution'),
+};
+
+function showSection(target) {
+  // toggle nav active
+  btns.forEach(b => b.classList.remove('active'));
+  const activeBtn = nav.querySelector(`[data-target="${target}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // show/hide sections
+  for (const [key, el] of Object.entries(sections)) {
+    el.style.display = (key === target || target === 'overview') ? 'block' : 'none';
+  }
+}
+
+nav.addEventListener('click', e => {
+  if (e.target.tagName === 'BUTTON' && e.target.dataset.target) {
+    showSection(e.target.dataset.target);
+  }
+});
+
+// default: overview
+showSection('overview');
+</script>
+</body>
+</html>

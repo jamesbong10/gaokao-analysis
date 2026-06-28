@@ -1,0 +1,19 @@
+# 原始数据（PDF 扫描件等，无需上传）
+原始数据/
+
+# 数据处理脚本（非网页运行必需）
+scripts/
+
+# Claude Code 内部配置
+.agents/
+.claude/
+
+# macOS
+.DS_Store
+
+# 编辑器 / IDE
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
